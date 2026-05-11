@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ваш рацион при снижении веса</title>
+  <style>
+    :root {
+      --green-900: #1b4332;
+      --green-700: #2d6a4f;
+      --green-600: #40916c;
+      --green-100: #d8f3dc;
+      --green-50: #f1f8f4;
+      --orange: #e85d04;
+      --text: #102a1f;
+      --muted: #4a5d52;
+      --card: rgba(255, 255, 255, 0.9);
+      --card-solid: #ffffff;
+      --shadow: 0 10px 32px rgba(16, 42, 31, 0.1);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      background-color: #dfece3;
+      background-image:
+        linear-gradient(165deg, rgba(247, 252, 249, 0.72) 0%, rgba(232, 244, 236, 0.68) 40%, rgba(220, 235, 226, 0.74) 100%),
+        radial-gradient(1000px 700px at 85% 15%, rgba(64, 145, 108, 0.2), transparent 55%),
+        url("fibra_section_bg.png");
+      background-size: cover;
+      background-position: center 22%;
+      background-repeat: no-repeat;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+
+    header.hero {
+      text-align: center;
+      margin-bottom: 22px;
+      padding: 20px 18px 22px;
+      border-radius: calc(var(--radius) + 4px);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(45, 106, 79, 0.12);
+      box-shadow: var(--shadow);
+    }
+
+    header.hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.45rem, 2.6vw, 1.85rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--green-900);
+    }
+
+    header.hero .lead {
+      margin: 0 auto;
+      max-width: 52rem;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .lead strong { color: var(--green-700); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 22px 0 26px;
+    }
+
+    @media (max-width: 720px) {
+      .stats { grid-template-columns: 1fr; }
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 14px;
+      text-align: center;
+      border: 1px solid rgba(45, 106, 79, 0.14);
+    }
+
+    .stat-card .big {
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      font-weight: 800;
+      color: var(--green-700);
+      line-height: 1.1;
+    }
+
+    .stat-card .big .unit {
+      font-size: 0.55em;
+      font-weight: 700;
+      color: var(--green-600);
+    }
+
+    .stat-card .label {
+      font-weight: 700;
+      color: var(--green-900);
+      margin-top: 6px;
+      font-size: 0.98rem;
+    }
+
+    .stat-card .hint {
+      margin-top: 6px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .menus {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    @media (max-width: 900px) {
+      .menus { grid-template-columns: 1fr; }
+    }
+
+    .menu-col {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(45, 106, 79, 0.14);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .menu-col .cap {
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(45, 106, 79, 0.9), rgba(64, 145, 108, 0.88));
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.02rem;
+      letter-spacing: 0.01em;
+    }
+
+    .menu-col .body {
+      padding: 12px 14px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .meal {
+      border: 1px dashed rgba(45, 106, 79, 0.28);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: rgba(216, 243, 220, 0.45);
+    }
+
+    .meal .t {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--green-700);
+      margin-bottom: 4px;
+    }
+
+    .ph {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+
+    section.block {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(45, 106, 79, 0.14);
+      padding: 18px 18px 16px;
+      margin-bottom: 14px;
+    }
+
+    section.block h2 {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+      color: var(--green-900);
+      font-weight: 800;
+    }
+
+    section.block p {
+      margin: 0 0 10px;
+      color: var(--muted);
+    }
+
+    section.block p:last-child { margin-bottom: 0; }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .two { grid-template-columns: 1fr; }
+    }
+
+    .mini h3 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+      color: var(--orange);
+      font-weight: 800;
+    }
+
+    .fibra-section {
+      margin-bottom: 14px;
+    }
+
+    .fibra-hero {
+      display: grid;
+      grid-template-columns: minmax(120px, 200px) 1fr;
+      gap: 22px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(45, 106, 79, 0.14);
+      padding: 20px 20px 22px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .fibra-hero {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+      .fibra-accent-row { justify-content: center; text-align: left; }
+    }
+
+    .fibra-img-wrap {
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: 16px;
+      border: 1px solid rgba(45, 106, 79, 0.12);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(16, 42, 31, 0.06);
+    }
+
+    .fibra-img-wrap img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .fibra-hero-text {
+      min-width: 0;
+      font-size: clamp(1.08rem, 2.1vw, 1.24rem);
+      font-weight: 800;
+      color: var(--green-900);
+      line-height: 1.42;
+    }
+
+    .fibra-intro {
+      margin: 0 0 14px;
+      font-size: 1em;
+      font-weight: 800;
+      color: inherit;
+      line-height: 1.42;
+    }
+
+    .fibra-accent-row {
+      display: flex;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .fibra-accent-bar {
+      width: 6px;
+      min-width: 6px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--green-900), var(--green-600));
+    }
+
+    .fibra-accent-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 1em;
+      font-weight: 800;
+      color: inherit;
+      line-height: 1.42;
+      letter-spacing: -0.01em;
+    }
+
+    .fibra-accent-list li {
+      margin: 0 0 12px;
+      padding-left: 0.1em;
+    }
+
+    .fibra-accent-list li:last-child { margin-bottom: 0; }
+
+    .fibra-accent-list li::before {
+      content: "•\00a0";
+      color: var(--green-600);
+      font-weight: 900;
+    }
+
+    .fibra-plaques {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .fibra-plaques { grid-template-columns: 1fr; }
+    }
+
+    .fibra-plaque {
+      background: rgba(244, 249, 244, 0.92);
+      border: 1px solid rgba(27, 67, 50, 0.16);
+      border-radius: var(--radius);
+      padding: 18px 18px 16px 20px;
+      border-left: 5px solid rgba(26, 77, 68, 0.92);
+      box-shadow: 0 6px 18px rgba(16, 42, 31, 0.07);
+    }
+
+    .fibra-plaque h2 {
+      margin: 0 0 12px;
+      font-size: clamp(0.98rem, 1.6vw, 1.08rem);
+      line-height: 1.35;
+      font-weight: 800;
+      color: #1a4d44;
+    }
+
+    .fibra-plaque p {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      color: #3d5248;
+      line-height: 1.55;
+    }
+
+    .fibra-plaque p:last-child { margin-bottom: 0; }
+
+    .fibra-banner {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: linear-gradient(135deg, rgba(184, 232, 196, 0.88), rgba(216, 243, 220, 0.9));
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid rgba(45, 106, 79, 0.18);
+      box-shadow: var(--shadow);
+    }
+
+    .fibra-check {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--green-700);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .fibra-banner-text p {
+      margin: 0 0 10px;
+      color: #102a1f;
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .fibra-banner-text p:last-child { margin-bottom: 0; }
+
+    .accent-line {
+      height: 3px;
+      width: 64px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--orange), rgba(232, 93, 4, 0.2));
+      margin: 8px 0 14px;
+    }
+
+    footer.note {
+      text-align: center;
+      font-size: 0.86rem;
+      color: #3d5248;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(45, 106, 79, 0.1);
+    }
+
+    /* Печать/PDF: не сбрасываем фон страницы и карточек — иначе расходится с экраном.
+       backdrop-filter в PDF даёт «пиксельную» подложку, поэтому на экране он тоже не используется. */
+    @media print {
+      header.hero,
+      .stat-card,
+      .menu-col,
+      section.block,
+      .fibra-hero,
+      .fibra-plaque,
+      .fibra-banner,
+      footer.note {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>Ваш рацион при снижении веса</h1>
+      <p class="lead">
+        Мы подобрали для вас примеры меню с калорийностью <strong>{{KCAL}} ккал</strong> в день. Такой уровень калорий помогает постепенно снижать вес и при этом сохранять комфорт в повседневной жизни.
+      </p>
+    </header>
+
+    <div class="stats" aria-label="Ключевые параметры">
+      <div class="stat-card">
+        <div class="big">{{KCAL}}<span class="unit"> ккал</span></div>
+        <div class="label">ккал в день</div>
+        <div class="hint">Суточная калорийность для постепенного снижения веса</div>
+      </div>
+      <div class="stat-card">
+        <div class="big">3</div>
+        <div class="label">варианта меню</div>
+        <div class="hint">Офисное, домашнее и перекус в городе</div>
+      </div>
+      <div class="stat-card">
+        <div class="big">4</div>
+        <div class="label">приёма пищи</div>
+        <div class="hint">Завтрак, обед, перекус и ужин</div>
+      </div>
+    </div>
+
+    <div class="menus">
+      <article class="menu-col">
+        <div class="cap">Офисное меню</div>
+        <div class="body">
+          <div class="meal"><div class="t">Завтрак</div><div class="ph">{{OFFICE_BREAKFAST}}</div></div>
+          <div class="meal"><div class="t">Обед</div><div class="ph">{{OFFICE_LUNCH}}</div></div>
+          <div class="meal"><div class="t">Перекус</div><div class="ph">{{OFFICE_SNACK}}</div></div>
+          <div class="meal"><div class="t">Ужин</div><div class="ph">{{OFFICE_DINNER}}</div></div>
+        </div>
+      </article>
+
+      <article class="menu-col">
+        <div class="cap">Домашнее меню</div>
+        <div class="body">
+          <div class="meal"><div class="t">Завтрак</div><div class="ph">{{HOME_BREAKFAST}}</div></div>
+          <div class="meal"><div class="t">Обед</div><div class="ph">{{HOME_LUNCH}}</div></div>
+          <div class="meal"><div class="t">Перекус</div><div class="ph">{{HOME_SNACK}}</div></div>
+          <div class="meal"><div class="t">Ужин</div><div class="ph">{{HOME_DINNER}}</div></div>
+        </div>
+      </article>
+
+      <article class="menu-col">
+        <div class="cap">Перекус в городе</div>
+        <div class="body">
+          <div class="meal"><div class="t">Завтрак</div><div class="ph">{{CITY_BREAKFAST}}</div></div>
+          <div class="meal"><div class="t">Обед</div><div class="ph">{{CITY_LUNCH}}</div></div>
+          <div class="meal"><div class="t">Перекус</div><div class="ph">{{CITY_SNACK}}</div></div>
+          <div class="meal"><div class="t">Ужин</div><div class="ph">{{CITY_DINNER}}</div></div>
+        </div>
+      </article>
+    </div>
+
+    <section class="block">
+      <h2>Что происходит с питанием при снижении калорийности</h2>
+      <div class="accent-line" aria-hidden="true"></div>
+      <p>
+        Когда мы уменьшаем калорийность рациона, мы неизбежно уменьшаем и общий объём пищи. Это необходимо для снижения веса. Однако вместе с калориями организм начинает получать меньше важных питательных веществ и микроэлементов.
+      </p>
+      <p>
+        Даже если рацион выглядит сбалансированным, их количество часто оказывается ниже необходимого. Кроме того, на фоне изменений в питании усвоение микроэлементов может быть не таким эффективным.
+      </p>
+    </section>
+
+    <div class="two">
+      <section class="block mini">
+        <h3>Пищевые волокна</h3>
+        <p>
+          Играют важную роль в работе кишечника и формировании чувства насыщения. Когда их становится меньше, могут появляться запоры, вздутие, ощущение, что вы не наедаетесь.
+        </p>
+      </section>
+      <section class="block mini">
+        <h3>Железо</h3>
+        <p>
+          Необходимо для нормального уровня энергии и общего самочувствия. При его недостатке могут появляться слабость, головокружение, усиливается выпадение волос.
+        </p>
+      </section>
+    </div>
+
+    <section class="block">
+      <p>
+        Эти состояния не всегда возникают сразу, но со временем они могут начать влиять на ваше самочувствие и на то, насколько комфортно вы переносите диету.
+      </p>
+    </section>
+
+    <section class="fibra-section" aria-label="Фибраксин">
+      <div class="fibra-hero">
+        <div class="fibra-img-wrap">
+          <img src="упаковка.webp" alt="Упаковка Фибраксин" width="280" />
+        </div>
+        <div class="fibra-hero-text">
+          <p class="fibra-intro">Фибраксин содержит синергично действующие компоненты:</p>
+          <div class="fibra-accent-row">
+            <div class="fibra-accent-bar" aria-hidden="true"></div>
+            <ul class="fibra-accent-list">
+              <li>растворимое пищевое волокно – арабиногалактан</li>
+              <li>железосодержащий белок – лактоферрин.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="fibra-plaques">
+        <article class="fibra-plaque">
+          <h2>Арабиногалактан — ценное натуральное растительное волокно из коры лиственницы</h2>
+          <p>
+            Оказывает регулирующее действие на кишечную моторику, служит питательной средой для полезной кишечной микрофлоры и влияет на продукцию короткоцепочечных жирных кислот.
+          </p>
+          <p>
+            Способствует поддержанию нормальной функции кишечника и регуляции стула, а также оказывает поддержку при снижении веса и регуляции аппетита.
+          </p>
+        </article>
+        <article class="fibra-plaque">
+          <h2>Лактоферрин — действует однонаправленно с арабиногалактаном и усиливает его эффекты.</h2>
+          <p>
+            Участвует в регуляции обмена железа и помогает улучшать его усвоение в условиях, когда поступление железа с пищей снижено или затруднено.
+          </p>
+          <p>
+            Способствует защите от вирусов и болезнетворных микроорганизмов, поддержанию иммунитета.
+          </p>
+        </article>
+      </div>
+
+      <div class="fibra-banner">
+        <span class="fibra-check" aria-hidden="true">✓</span>
+        <div class="fibra-banner-text">
+          <p>
+            Такое сочетание компонентов позволяет одновременно восполнить дефицит пищевых волокон и поддержать обмен железа, что делает снижение веса более комфортным.
+          </p>
+          <p>
+            Даже правильно подобранный рацион может сопровождаться дефицитом отдельных нутриентов — если поддерживать организм в этот период, диета переносится легче, а результат становится более устойчивым.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="note">
+      Материал носит информационный характер и не заменяет консультацию специалиста.
+    </footer>
+  </div>
+</body>
+</html>
